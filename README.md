@@ -34,7 +34,7 @@ The best way to run this webservice is to build and run docker image.
 
 ### Validation
 To validate this service locally we recommend to use [Postman](https://www.getpostman.com/apps).
-After installation open the [collection link]((https://www.getpostman.com/collections/816d9da9b94d63db1221)) to import predefined basic calls.
+After installation open the [collection link](https://www.getpostman.com/collections/816d9da9b94d63db1221) to import predefined basic calls.
 
 **cURL basic queries**
 * Place Bet Node 1 (Port: 8081)
