@@ -31,8 +31,9 @@ class UnsecuredRoutes(dealer: ActorRef) extends Protocols {
         get {
           onComplete(dealer ? GetBets(playerId)) {
             case Success(BetsList(list)) => complete(StatusCodes.OK -> list)
-            case Success(PlayerNotFound(_, msg)) => complete(StatusCodes.BadRequest -> msg)
+            case Success(PlayerNotFound(_, msg)) => complete(StatusCodes.BadRequest -> GeneralError(msg))
 
+            case Success(_) => complete(StatusCodes.BadRequest -> GeneralError())
             case Failure(msg) => complete(StatusCodes.InternalServerError -> GeneralError(msg.getMessage))
           }
         }
@@ -43,6 +44,7 @@ class UnsecuredRoutes(dealer: ActorRef) extends Protocols {
             case Success(bet: BetPlaced) => complete(StatusCodes.OK -> bet)
             case Success(error: GeneralError) => complete(StatusCodes.BadRequest -> error)
 
+            case Success(_) => complete(StatusCodes.BadRequest -> GeneralError())
             case Failure(msg) => complete(StatusCodes.InternalServerError -> GeneralError(msg.getMessage))
           }
         }

@@ -18,7 +18,7 @@ object Dealer {
   case class Bet (gameId: Long, playerId: Long, amount: Double)
   case class GetBets(playerId: Long)
 
-  case class GeneralError(msg: String)
+  case class GeneralError(msg: String = "Internal Server Error.")
 }
 class Dealer (croupier: ActorRef) extends Actor with ActorLogging {
   implicit val timeout = Timeout(5 seconds)
