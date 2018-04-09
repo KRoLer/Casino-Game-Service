@@ -7,6 +7,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import com.casino.actors.RemoteWallet._
+import com.typesafe.config.ConfigFactory
 import spray.json.DefaultJsonProtocol
 
 import scala.util.Success
@@ -30,6 +31,8 @@ class RemoteWallet extends Actor with ActorLogging with Protocols {
   private val http = Http(context.system)
   implicit val executionContext = context.dispatcher
   implicit val actorMaterializer = ActorMaterializer()
+  private val config = ConfigFactory.load()
+  private val URL = config.getString("service.withdraw.url")
 
   //TODO: Move request JSON and URL to configuration
   private def withdrawRequest(entity: Withdraw): String =
@@ -41,7 +44,7 @@ class RemoteWallet extends Actor with ActorLogging with Protocols {
       val fut = http.singleRequest(
         HttpRequest(
           HttpMethods.POST,
-          Uri("http://localhost:8080/api/v1/withdraw"),
+          Uri(URL),
           entity = HttpEntity(ContentTypes.`application/json`, withdrawRequest(withdraw))))
 
       fut onComplete {

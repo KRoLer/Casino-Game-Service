@@ -1,8 +1,13 @@
-name := "Game"
+enablePlugins(JavaAppPackaging)
+enablePlugins(DockerPlugin)
+
+name := "Game-webservice"
 
 version := "0.1"
 
 scalaVersion := "2.12.5"
+
+mainClass in Compile := Some("com.casino.GameService")
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-cluster" % "2.5.11",
