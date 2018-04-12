@@ -9,6 +9,8 @@ import akka.stream.ActorMaterializer
 import com.casino.actors.RemoteWallet._
 import com.typesafe.config.ConfigFactory
 import spray.json.DefaultJsonProtocol
+import spray.json._
+
 
 import scala.util.Success
 
@@ -21,22 +23,17 @@ object RemoteWallet {
 }
 
 trait Protocols extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit val withdraw = jsonFormat2(Withdraw)
-  implicit val withdrawn = jsonFormat1(Withdrawn)
-  implicit val withdrawError = jsonFormat2(WithdrawError)
+  implicit val withdrawFormatter = jsonFormat2(Withdraw)
+  implicit val withdrawnFormatter = jsonFormat1(Withdrawn)
+  implicit val withdrawErrorFormatter = jsonFormat2(WithdrawError)
 }
 
 class RemoteWallet extends Actor with ActorLogging with Protocols {
-
   private val http = Http(context.system)
   implicit val executionContext = context.dispatcher
   implicit val actorMaterializer = ActorMaterializer()
   private val config = ConfigFactory.load()
   private val URL = config.getString("service.withdraw.url")
-
-  //TODO: Move request JSON and URL to configuration
-  private def withdrawRequest(entity: Withdraw): String =
-    "{\"playerId\":" + entity.playerId + ",\"amount\": " + entity.amount + "}"
 
   override def receive: Receive = {
     case withdraw: Withdraw => {
@@ -45,7 +42,7 @@ class RemoteWallet extends Actor with ActorLogging with Protocols {
         HttpRequest(
           HttpMethods.POST,
           Uri(URL),
-          entity = HttpEntity(ContentTypes.`application/json`, withdrawRequest(withdraw))))
+          entity = HttpEntity(ContentTypes.`application/json`, withdraw.toJson.compactPrint)))
 
       fut onComplete {
         case Success(HttpResponse(StatusCodes.OK, _, entity, _)) =>
