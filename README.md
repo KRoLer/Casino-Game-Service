@@ -15,8 +15,13 @@
     
 ## Usage
 The best way to run this webservice is to build and run docker image.
-
-### Installation
+### Run the whole cluster with one command
+* Clone this repository 
+* Open terminal, navigate to the target folder
+* Run: `sh ./runCluster.sh`
+    * It will download necessary images of Cassandra and both, Game and Wallet, services
+    * Run them and bind to the local ports (Wallet service - localhost:8080, Game service - localhost:8081, localhost:8082) 
+### Manual Installation
 * Validate docker installation or install it ([Download here](https://www.docker.com/community-edition))
 * Create docker network: `docker network create casino`
 * Download Cassandra image using docker: `docker pull cassandra`   
